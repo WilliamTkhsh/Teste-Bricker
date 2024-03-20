@@ -12,14 +12,12 @@ from langchain.output_parsers import PydanticOutputParser
 load_dotenv()
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+BUCKET = os.environ.get("BUCKET")
 PROMPT_MATRICULA = """
     Obtenha informações deste texto retirado de um documento de matrícula de imóvel.
     {query}
     {format_instructions}
     """
-bucket = 'bricker-matricula'
-fileName = 'matricula-6.pdf'
-
 
 # Recebe o resultado do Job assíncrono após ter completado
 # Retorna o número de páginas do documento
@@ -75,11 +73,14 @@ def is_job_complete(client, job_id):
     return status
     
 if __name__ == "__main__":
+
+    fileName = input("Digite o nome do arquivo : ")
+
     # 1. OCR para extração do texto.
     # Client da AWS para utilizar o serviço Amazon Textract
     client = boto3.client('textract')
 
-    jobId = start_job(client, bucket, fileName)
+    jobId = start_job(client, BUCKET, fileName)
 
     print("Iniciando OCR com Amazon Textract com JobId: {}".format(jobId))
 
